@@ -1,8 +1,13 @@
-import { Form, Select, Card, Input, Button, Modal } from 'antd';
+import {
+  Form, Select, Card, Input, Button, Modal,
+} from 'antd';
 import { create } from 'zustand';
-import styles from './index.module.scss';
-import { objectTypeData } from './formsStaticData';
 import { useState } from 'react';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { DefaultOptionType } from 'antd/es/select';
+import { objectTypeData } from './formsStaticData';
+import styles from './index.module.scss';
+import FirstTable from './components/firstTable';
 
 const formItemLayout = {
   labelCol: {
@@ -27,37 +32,56 @@ interface StoreState {
   userList: { id: string; fullName: string }[];
   addUser: (fullName: string) => void;
   deleteUser: (id: string) => void;
+  cleanStore: () => void;
 }
 
-const useStore = create<StoreState>((set) => ({
-  objectType: '',
-  setObjectType: (value) => set({ objectType: value }),
-  objectName: '',
-  setObjectName: (value) => set({ objectName: value }),
-  objectAddress: '',
-  setObjectAddress: (value) => set({ objectAddress: value }),
-  fullName: '',
-  setFullName: (value) => set({ fullName: value }),
-  userList: [],
-  addUser: (fullName) => {
-    set((state) => ({
-      userList: [
-        ...state.userList,
-        { id: Math.random().toString(), fullName },
-      ],
-    }));
-  },
-  deleteUser: (id) => {
-    set((state) => ({
-      userList: state.userList.filter((user) => user.id !== id),
-    }));
-  },
-}));
+const useStore = create<StoreState>()(
+  persist(
+    (set) => ({
+      objectType: '',
+      setObjectType: (value) => set({ objectType: value }),
+      objectName: '',
+      setObjectName: (value) => set({ objectName: value }),
+      objectAddress: '',
+      setObjectAddress: (value) => set({ objectAddress: value }),
+      fullName: '',
+      setFullName: (value) => set({ fullName: value }),
+      userList: [],
+      addUser: (fullName) => {
+        set((state) => ({
+          userList: [
+            ...state.userList,
+            { id: Math.random().toString(), fullName },
+          ],
+        }));
+      },
+      deleteUser: (id) => {
+        set((state) => ({
+          userList: state.userList.filter((user) => user.id !== id),
+        }));
+      },
+      cleanStore: () => {
+        set({
+          objectType: '',
+          objectName: '',
+          objectAddress: '',
+          fullName: '',
+          userList: [],
+        });
+      },
+    }),
+    {
+      name: 'calculateStorage',
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
 
-function App() {
+const App = () => {
   const {
     setObjectType,
     objectName,
+    objectType,
     setObjectName,
     objectAddress,
     setObjectAddress,
@@ -65,18 +89,17 @@ function App() {
     setFullName,
     userList,
     addUser,
+    cleanStore,
     deleteUser,
   } = useStore();
 
   const [selectedUserForDelete, setSelectedUserForDelete] = useState<
-    string | undefined
+  string | undefined
   >(undefined);
   const [addUserForList, setAddUserForList] = useState<
   string | undefined
->(undefined);
-
-  console.log('userList', userList);
-  
+  >(undefined);
+  const [form] = Form.useForm();
 
   const handleFormChange = (field: keyof StoreState, value: string) => {
     switch (field) {
@@ -118,11 +141,32 @@ function App() {
     setFullName('');
   };
 
+  const onSubmit = () => {
+    console.log('SUBMIT');
+  };
+
   return (
     <Card className={styles.wrap} title="Форма выбора объекта">
-      <Form className={styles.form} {...formItemLayout} layout="horizontal">
-        <Form.Item label="Тип объекта">
-          <Select onChange={(value) => handleFormChange('objectType', value)}>
+      <Form form={form} name="basic" onFinish={onSubmit} className={styles.form} {...formItemLayout} layout="horizontal">
+        <Form.Item
+          label="Тип объекта"
+          name="typeObject"
+          rules={
+          [
+            {
+              required: true,
+              message: 'Пожалуйста выберите тип обьекта',
+            },
+          ]
+        }
+        >
+          <Select
+            defaultValue={objectType}
+            onChange={(_, i) => {
+              const type = i as DefaultOptionType;
+              handleFormChange('objectType', type.key);
+            }}
+          >
             {objectTypeData.map((item) => (
               <Select.Option key={item.id} value={item.title}>
                 {item.title}
@@ -130,19 +174,54 @@ function App() {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label="Название объекта">
+        <Form.Item
+          label="Название объекта"
+          name="nameObject"
+          rules={
+         [
+           {
+             required: true,
+             message: 'Пожалуйста введите имя обьекта',
+           },
+         ]
+       }
+        >
           <Input
             value={objectName}
+            placeholder="ТЦ Арена"
             onChange={(e) => handleFormChange('objectName', e.target.value)}
           />
         </Form.Item>
-        <Form.Item label="Адрес объекта">
+        <Form.Item
+          label="Адрес объекта"
+          name="adressObject"
+          rules={
+         [
+           {
+             required: true,
+             message: 'Пожалуйста введите адрес обьекта',
+           },
+         ]
+       }
+        >
           <Input
             value={objectAddress}
+            placeholder="Новосибирск, ул. Народная 27"
             onChange={(e) => handleFormChange('objectAddress', e.target.value)}
           />
         </Form.Item>
-        <Form.Item label="Ф.И.О. выполнившего расчет">
+        <Form.Item
+          label="Ф.И.О. выполнившего расчет"
+          name="userFullname"
+          rules={
+         [
+           {
+             required: true,
+             message: 'Пожалуйста укажите Ф.И.О выполнивнего расчет',
+           },
+         ]
+}
+        >
           <Select
             value={fullName}
             onChange={(value) => handleFormChange('fullName', value)}
@@ -157,24 +236,52 @@ function App() {
             ))}
           </Select>
         </Form.Item>
+        <Form.Item shouldUpdate className="mb-0">
+          {() => (
+            <Button
+              type="primary"
+              size="large"
+              htmlType="submit"
+              className={styles.btn}
+              disabled={
+                !form.isFieldsTouched(true)
+                || form.getFieldsError().filter(({ errors }) => errors.length).length > 0
+              }
+            >
+              <p>
+                Рассчитать показатель
+                {' '}
+                <br />
+                тяжести потенциальных негативных
+                {' '}
+                <br />
+                последствий пожара Кг.и.инд
+              </p>
+            </Button>
+          )}
+        </Form.Item>
       </Form>
-      <Button type="primary" className={styles.btn} size='large'>
-        <p>
-        Рассчитать показатель <br />
-         тяжести потенциальных негативных <br />
-          последствий пожара Кг.и.инд
-        </p>
+      <Button
+        danger
+        type="primary"
+        onClick={() => {
+          cleanStore();
+          form.resetFields();
+        }}
+      >
+        Очистить форму
       </Button>
+
       <Modal
         title="Введите Фамилию Имя Отчество"
         onOk={handleOkAddModal}
         onCancel={handleCancelAddModal}
         open={fullName === 'new'}
       >
-      <Input 
-      onInput={(e) => setAddUserForList(e.target.value)}
-      placeholder="Введите ФИО"
-      value={addUserForList}
+        <Input
+          onInput={(e: React.FormEvent<HTMLInputElement>) => setAddUserForList(e.currentTarget.value)}
+          placeholder="Введите ФИО"
+          value={addUserForList}
         />
       </Modal>
       <Modal
@@ -194,8 +301,18 @@ function App() {
           ))}
         </Select>
       </Modal>
+      <Card>
+        <p>{objectType}</p>
+        <p>{objectName}</p>
+        <p>
+          Расположен по адресу:
+          {objectAddress}
+        </p>
+        <h2>Определение индификаторов риска Iрпв</h2>
+        <FirstTable />
+      </Card>
     </Card>
   );
-}
+};
 
 export default App;

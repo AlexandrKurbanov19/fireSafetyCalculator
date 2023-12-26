@@ -29,7 +29,6 @@ module.exports = {
     'tsc',
     'react',
     '@typescript-eslint',
-    'graphql',
     'vitest',
     'react-perf',
   ],
@@ -43,21 +42,6 @@ module.exports = {
   rules: {
     'tsc/config': [1, {
       configFile: 'tsconfig.json',
-    }],
-    'graphql/template-strings': ['error', {
-      // Import default settings for your GraphQL client. Supported values:
-      // 'apollo', 'relay', 'lokka', 'fraql', 'literal'
-      env: 'apollo',
-      // Import your schema JSON here
-      schemaJson: require('./graphql.schema.json'),
-
-      // OR provide absolute path to your schema JSON (but not if using `eslint --cache`!)
-      // schemaJsonFilepath: path.resolve(__dirname, './schema.json'),
-
-      // OR provide the schema in the Schema Language format
-      // schemaString: printSchema(schema),
-
-      // tagName is gql by default
     }],
 
     'react/jsx-filename-extension': [2, {
