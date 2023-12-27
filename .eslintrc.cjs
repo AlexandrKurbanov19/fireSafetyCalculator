@@ -25,13 +25,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: [
-    'tsc',
-    'react',
-    '@typescript-eslint',
-    'vitest',
-    'react-perf',
-  ],
+  plugins: ['tsc', 'react', '@typescript-eslint', 'vitest', 'react-perf'],
   settings: {
     'import/resolver': {
       node: {
@@ -40,22 +34,34 @@ module.exports = {
     },
   },
   rules: {
-    'tsc/config': [1, {
-      configFile: 'tsconfig.json',
-    }],
+    'tsc/config': [
+      1,
+      {
+        configFile: 'tsconfig.json',
+      },
+    ],
 
-    'react/jsx-filename-extension': [2, {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    }],
+    'react/jsx-filename-extension': [
+      2,
+      {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    ],
     'import/extensions': 0,
-    'react/function-component-definition': [2, {
-      namedComponents: 'arrow-function',
-    }],
+    'react/function-component-definition': [
+      2,
+      {
+        namedComponents: 'arrow-function',
+      },
+    ],
     'no-underscore-dangle': 0,
     'no-nested-ternary': 0,
-    'react/no-unstable-nested-components': [2, {
-      allowAsProps: true,
-    }],
+    'react/no-unstable-nested-components': [
+      2,
+      {
+        allowAsProps: true,
+      },
+    ],
     'react/jsx-no-bind': 0,
     'class-methods-use-this': 0,
     'no-plusplus': 0,
@@ -67,19 +73,25 @@ module.exports = {
     'react/no-array-index-key': 0,
     'no-param-reassign': 0,
     '@typescript-eslint/naming-convention': 0,
-    'max-len': ['error', {
-      code: 120,
-      tabWidth: 2,
-      ignoreComments: true,
-      ignoreTrailingComments: true,
-      ignoreUrls: true,
-      ignoreStrings: true,
-      ignoreTemplateLiterals: true,
-      ignoreRegExpLiterals: true,
-    }],
-    'no-console': ['error', {
-      allow: ['warn', 'error', 'time', 'timeEnd'],
-    }],
+    'max-len': [
+      'error',
+      {
+        code: 120,
+        tabWidth: 2,
+        ignoreComments: true,
+        ignoreTrailingComments: true,
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignoreRegExpLiterals: true,
+      },
+    ],
+    'no-console': [
+      'error',
+      {
+        allow: ['warn', 'error', 'time', 'timeEnd'],
+      },
+    ],
 
     // TODO: Прощаем некоторые грехи TS, а по хорошему надо исправить
     '@typescript-eslint/no-explicit-any': 'warn',
@@ -98,10 +110,12 @@ module.exports = {
     'react-perf/jsx-no-new-function-as-prop': 'warn',
     'react-perf/jsx-no-jsx-as-prop': 'off',
 
-    "import/no-extraneous-dependencies": [
-      "error", {
-      "devDependencies": true
-    }]
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: true,
+      },
+    ],
   },
   ignorePatterns: ['src/generated/*.*'],
 };
