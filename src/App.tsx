@@ -1,10 +1,11 @@
+import React from 'react';
 import { Button, Card } from 'antd';
 import { RollbackOutlined } from '@ant-design/icons';
 import styles from './index.module.scss';
 import FirstTable from './components/tables/firstTable';
 import { useStore } from './store';
-import { MainFrom } from './components/mainForm/MainFrom';
-import { InformationTableTitle } from './components/informationTableTitle/informationTableTitle';
+import MainFrom from './components/mainForm/MainFrom';
+import InformationTableTitle from './components/informationTableTitle/InformationTableTitle';
 
 const App = () => {
   const {

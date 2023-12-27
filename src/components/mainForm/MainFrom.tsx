@@ -2,7 +2,7 @@ import {
   Form, Select, Input, Button, Modal,
 } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styles from '../../index.module.scss';
 import { objectTypeData } from '../../formsStaticData';
 import { StoreState } from '../../store';
@@ -18,7 +18,7 @@ const formItemLayout = {
   },
 };
 
-export const MainFrom: FC<StoreState> = ({
+const MainFrom: FC<StoreState> = ({
   setFullName,
   setObjectAddress,
   setObjectType,
@@ -244,3 +244,4 @@ export const MainFrom: FC<StoreState> = ({
     </>
   );
 };
+export default MainFrom;

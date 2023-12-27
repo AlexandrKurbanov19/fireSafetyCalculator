@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import styles from './index.module.scss';
 import { objectTypeData } from '../../formsStaticData';
 
@@ -9,7 +9,7 @@ interface IInformationTableTitle {
   tableTitle: string;
 }
 
-export const InformationTableTitle: FC<IInformationTableTitle> = ({
+const InformationTableTitle: FC<IInformationTableTitle> = ({
   objectAddress,
   objectName,
   objectType,
@@ -28,3 +28,4 @@ export const InformationTableTitle: FC<IInformationTableTitle> = ({
     </h2>
   </div>
 );
+export default InformationTableTitle;

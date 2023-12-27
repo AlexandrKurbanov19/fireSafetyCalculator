@@ -41,8 +41,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
         }}
         style={{ width: '230px' }}
       >
-        {record.criterion?.map((item, index) => (
-          <Select.Option key={index} sum={item.sum} value={item.id}>
+        {record.criterion?.map((item, i) => (
+          <Select.Option key={i} sum={item.sum} value={item.id}>
             {item.value}
           </Select.Option>
         ))}
