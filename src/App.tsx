@@ -2,10 +2,11 @@ import React from 'react';
 import { Button, Card } from 'antd';
 import { RollbackOutlined } from '@ant-design/icons';
 import styles from './index.module.scss';
-import FirstTable from './components/tables/firstTable';
+import FirstTable from './components/tables/FirstTable/FirstTable';
 import { useStore } from './store';
 import MainFrom from './components/mainForm/MainFrom';
 import InformationTableTitle from './components/informationTableTitle/InformationTableTitle';
+import SecondTable from './components/tables/SecondTable/SecondTable';
 
 const App = () => {
   const {
@@ -23,6 +24,10 @@ const App = () => {
     deleteUser,
     formState,
     changeFormState,
+    firstTableData,
+    secondTableData,
+    changeSecondTableData,
+    changeFirstTableData,
   } = useStore();
 
   const formTitle = (formState === 'Home' && 'Форма выбора объекта')
@@ -71,9 +76,33 @@ const App = () => {
             objectType={objectType}
             objectName={objectName}
             objectAddress={objectAddress}
-            tableTitle="Iрпв"
+            title='Определение индификаторов риска Iрпв'
           />
-          <FirstTable />
+          <FirstTable
+            firstTableData={firstTableData}
+            changeFirstTableData={changeFirstTableData}
+          />
+          <Button onClick={() => changeFormState('TableFinal')} type='primary'>Расчет критерия добросоветсности Iкрд</Button>
+        </div>
+      )}
+      {formState === 'TableFinal' && (
+        <div>
+          <InformationTableTitle
+            objectType={objectType}
+            objectName={objectName}
+            objectAddress={objectAddress}
+            title='Определение критериев добросовестности Iкрд'
+          />
+          <SecondTable
+            secondTableData={secondTableData}
+            fullName={fullName}
+            changeSecondTableData={changeSecondTableData}
+          />
+          <div className={styles.nav}>
+            <Button type='default' onClick={() => console.log()}>Скачать pdf файл отчета</Button>
+            <Button type='default' onClick={() => changeFormState('TableFirst')}>Вернуться к определению индикаторов риска Iрпв</Button>
+            <Button type='default' onClick={() => changeFormState('Home')}>Вернуться на главную форму</Button>
+          </div>
         </div>
       )}
     </Card>

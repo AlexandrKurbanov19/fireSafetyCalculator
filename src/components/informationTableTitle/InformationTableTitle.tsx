@@ -1,30 +1,30 @@
 import React, { FC } from 'react';
 import styles from './index.module.scss';
-import { objectTypeData } from '../../formsStaticData';
+import { objectTypeData } from '../mainForm/formsStaticData/index';
 
 interface IInformationTableTitle {
   objectType: string;
   objectName: string;
   objectAddress: string;
-  tableTitle: string;
+  title: string,
 }
 
 const InformationTableTitle: FC<IInformationTableTitle> = ({
   objectAddress,
   objectName,
   objectType,
-  tableTitle,
+  title,
 }) => (
   <div className={styles.titleWrap}>
     <p>{objectTypeData?.find((el) => el?.id === Number(objectType))?.title}</p>
     <p>{objectName}</p>
     <p>
       Расположен по адресу:
+      {' '}
       {objectAddress}
     </p>
     <h2>
-      Определение индификаторов риска
-      {tableTitle}
+      {title}
     </h2>
   </div>
 );

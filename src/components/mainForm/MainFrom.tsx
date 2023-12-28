@@ -2,9 +2,9 @@ import {
   Form, Select, Input, Button, Modal,
 } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import styles from '../../index.module.scss';
-import { objectTypeData } from '../../formsStaticData';
+import { objectTypeData } from './formsStaticData/index';
 import { StoreState } from '../../store';
 
 const formItemLayout = {
@@ -18,7 +18,7 @@ const formItemLayout = {
   },
 };
 
-const MainFrom: FC<StoreState> = ({
+const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 'secondTableData' | 'changeSecondTableData'>> = ({
   setFullName,
   setObjectAddress,
   setObjectType,
@@ -83,6 +83,13 @@ const MainFrom: FC<StoreState> = ({
   const onSubmit = () => {
     changeFormState('TableFirst');
   };
+
+  const initialVal = useMemo(() => ({
+    typeObject: objectTypeData?.find((el) => el?.id === Number(objectType))?.title,
+    nameObject: objectName,
+    adressObject: objectAddress,
+    userFullname: userList?.[0]?.fullName,
+  }), [objectType, objectTypeData, objectName, objectAddress]);
   return (
     <>
       <Form
@@ -91,6 +98,7 @@ const MainFrom: FC<StoreState> = ({
         onFinish={onSubmit}
         className={styles.form}
         {...formItemLayout}
+        initialValues={initialVal}
         layout="horizontal"
       >
         <Form.Item
@@ -104,7 +112,6 @@ const MainFrom: FC<StoreState> = ({
           ]}
         >
           <Select
-            defaultValue={objectType}
             onChange={(_, i) => {
               const type = i as DefaultOptionType;
               handleFormChange('objectType', type.key);
@@ -183,8 +190,7 @@ const MainFrom: FC<StoreState> = ({
               htmlType="submit"
               className={styles.btn}
               disabled={
-                !form.isFieldsTouched(true)
-                || form.getFieldsError().filter(({ errors }) => errors.length)
+                form.getFieldsError().filter(({ errors }) => errors.length)
                   .length > 0
               }
             >

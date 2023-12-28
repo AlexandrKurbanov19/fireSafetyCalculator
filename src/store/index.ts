@@ -1,7 +1,15 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { originDataForFirstTable, originDataForSecondTable } from '@/components/tables/TablesApiData/tableData';
 
 type formStateType = 'Home' | 'TableFirst' | 'TableFinal';
+
+export interface Item {
+  key: string;
+  risk: string;
+  criterion: { id: string; value: string; sum: number, select?: boolean }[];
+  indicatorValue: number;
+}
 
 export interface StoreState {
   objectType: string;
@@ -18,6 +26,10 @@ export interface StoreState {
   deleteUser: (id: string) => void;
   changeFormState: (val: formStateType) => void;
   cleanStore: () => void;
+  firstTableData: Item[] | [];
+  secondTableData: Item[] | [];
+  changeFirstTableData: (v: Item[]) => void;
+  changeSecondTableData: (v: Item[]) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -32,6 +44,8 @@ export const useStore = create<StoreState>()(
       setObjectAddress: (value) => set({ objectAddress: value }),
       fullName: '',
       setFullName: (value) => set({ fullName: value }),
+      firstTableData: originDataForFirstTable,
+      secondTableData: originDataForSecondTable,
       userList: [],
       addUser: (fullName) => {
         set((state) => ({
@@ -50,6 +64,16 @@ export const useStore = create<StoreState>()(
         set((state) => ({
           userList: state.userList.filter((user) => user.id !== id),
         }));
+      },
+      changeFirstTableData: (val: Item[]) => {
+        set({
+          firstTableData: val,
+        });
+      },
+      changeSecondTableData: (val: Item[]) => {
+        set({
+          secondTableData: val,
+        });
       },
       cleanStore: () => {
         set({
