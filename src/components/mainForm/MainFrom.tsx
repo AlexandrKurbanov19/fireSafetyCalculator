@@ -2,7 +2,9 @@ import {
   Form, Select, Input, Button, Modal,
 } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { FC, useMemo, useState } from 'react';
+import React, {
+  FC, useCallback, useMemo, useState,
+} from 'react';
 import styles from '../../index.module.scss';
 import { objectTypeData } from './formsStaticData/index';
 import { StoreState } from '../../store';
@@ -41,26 +43,26 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
     undefined,
   );
 
-  const handleOkAddModal = () => {
+  const handleOkAddModal = useCallback(() => {
     if (addUserForList) {
       addUser(addUserForList);
       setFullName('');
     }
-  };
+  }, [addUser, addUserForList, setFullName]);
 
-  const handleCancelAddModal = () => {
+  const handleCancelAddModal = useCallback(() => {
     setFullName('');
-  };
+  }, [setFullName]);
 
-  const handleOkDeleteModal = () => {
+  const handleOkDeleteModal = useCallback(() => {
     if (selectedUserForDelete) {
       deleteUser(selectedUserForDelete);
     }
-  };
+  }, [deleteUser, selectedUserForDelete]);
 
-  const handleCancelDeleteModal = () => {
+  const handleCancelDeleteModal = useCallback(() => {
     setFullName('');
-  };
+  }, [setFullName]);
 
   const handleFormChange = (field: keyof StoreState, value: string) => {
     switch (field) {
@@ -80,9 +82,9 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         break;
     }
   };
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     changeFormState('TableFirst');
-  };
+  }, [changeFormState]);
 
   const initialVal = useMemo(() => ({
     typeObject: objectTypeData?.find((el) => el?.id === Number(objectType))?.title,
@@ -185,7 +187,6 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         <Form.Item shouldUpdate className="mb-0">
           {() => (
             <Button
-              type="primary"
               size="large"
               htmlType="submit"
               className={styles.btn}

@@ -1,5 +1,12 @@
 import { Item } from '@/store';
 
+export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+  dataIndex: string;
+  title: string;
+  record: Item;
+  children: React.ReactNode;
+}
+
 export const originDataForFirstTable: Item[] = [
   {
     key: '1',

@@ -1,16 +1,7 @@
 import React, { useMemo } from 'react';
 import { Form, Select, Table } from 'antd';
 import { Item, StoreState } from '@/store';
-
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-  editing: boolean;
-  dataIndex: string;
-  title: any;
-  inputType: 'number' | 'text';
-  record: Item;
-  index: number;
-  children: React.ReactNode;
-}
+import { EditableCellProps } from '../TablesApiData/tableData';
 
 const columns = [
   {
@@ -59,13 +50,12 @@ const FirstTable: React.FC<Pick<StoreState, 'firstTableData' | 'changeFirstTable
     dataIndex,
     title,
     record,
-    index,
     children,
     ...restProps
   }) => {
     let child;
 
-    const onCellChange = (value: number, criterionId: string) => {
+    const onCellChange = (value: number, criterionId: string | null | undefined | number) => {
       const updatedData = firstTableData.map((item) => {
         if (item.key === record.key) {
           return {
@@ -94,7 +84,9 @@ const FirstTable: React.FC<Pick<StoreState, 'firstTableData' | 'changeFirstTable
         <Select
           value={record.criterion?.find((el) => el?.select)}
           onChange={(_, v) => {
-            onCellChange(v?.sum, v?.value);
+            if (!Array.isArray(v)) {
+              onCellChange(v?.sum, v?.value);
+            }
           }}
           style={{ width: '230px' }}
         >

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Form, Select, Table } from 'antd';
 import { Item, StoreState } from '@/store';
-import { ResultTablesFooter } from '@/components/resultTablesFooter/resultTablesFooter';
+import ResultTablesFooter from '@/components/resultTablesFooter/resultTablesFooter';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -67,7 +67,7 @@ const SecondTable: React.FC<Pick<StoreState, 'secondTableData' | 'changeSecondTa
   }) => {
     let child;
 
-    const onCellChange = (value: number, criterionId: string) => {
+    const onCellChange = (value: number, criterionId: string | null | undefined | number) => {
       const updatedData = secondTableData.map((item) => {
         if (item.key === record.key) {
           return {
@@ -96,7 +96,9 @@ const SecondTable: React.FC<Pick<StoreState, 'secondTableData' | 'changeSecondTa
         <Select
           value={record.criterion?.find((el) => el?.select)}
           onChange={(_, v) => {
-            onCellChange(v?.sum, v?.value);
+            if (!Array.isArray(v)) {
+              onCellChange(v?.sum, v?.value);
+            }
           }}
           style={{ width: '230px' }}
         >
@@ -116,26 +118,28 @@ const SecondTable: React.FC<Pick<StoreState, 'secondTableData' | 'changeSecondTa
   const allSumm = useMemo(() => secondTableData?.reduce((acc, currentVal) => acc + currentVal?.indicatorValue, 0), [secondTableData]);
 
   return (
-    <Form form={form} component={false}>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        bordered
-        dataSource={secondTableData}
-        columns={mergedColumns}
-        rowClassName="editable-row"
-        pagination={false}
-        scroll={{x: true}}
-      />
-      <ResultTablesFooter
-        allSumm={allSumm}
-        userFullName={fullName}
-        tableMode="Final"
-      />
-    </Form>
+    <div>
+      <Form form={form} component={false}>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          bordered
+          dataSource={secondTableData}
+          columns={mergedColumns}
+          rowClassName="editable-row"
+          pagination={false}
+          scroll={{ x: true }}
+        />
+        <ResultTablesFooter
+          allSumm={allSumm}
+          userFullName={fullName}
+          tableMode="Final"
+        />
+      </Form>
+    </div>
   );
 };
 

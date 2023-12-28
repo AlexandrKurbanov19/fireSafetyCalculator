@@ -82,7 +82,11 @@ export const useStore = create<StoreState>()(
           objectAddress: '',
           fullName: '',
           userList: [],
+          firstTableData: [],
+          secondTableData: [],
         });
+        window.location.reload();
+        localStorage.removeItem('calculateStorage');
       },
     }),
     {

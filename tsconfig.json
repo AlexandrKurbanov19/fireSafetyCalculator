@@ -22,7 +22,7 @@
     "outDir": "dist",
     "sourceMap": true,
     "declaration": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "declarationMap": true,
     "typeRoots": ["./node_modules/@types"],
     "paths": {
