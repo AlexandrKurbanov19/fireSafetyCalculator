@@ -3,11 +3,11 @@ import { Button, Card } from 'antd';
 import { RollbackOutlined } from '@ant-design/icons';
 import { useReactToPrint } from 'react-to-print';
 import styles from './index.module.scss';
-import FirstTable from './components/tables/FirstTable/FirstTable';
 import { useStore } from './store';
 import MainFrom from './components/mainForm/MainFrom';
 import InformationTableTitle from './components/informationTableTitle/InformationTableTitle';
-import SecondTable from './components/tables/SecondTable/SecondTable';
+import InformationTable from './components/tables/InformationTable/InformationTable';
+import { columnsForFirstTable, columnsForSecondTable } from './components/tables/TablesApiData/tableData';
 
 const App = () => {
   const {
@@ -54,6 +54,19 @@ const App = () => {
     }
   }, [formState, changeFormState]);
 
+  const sumForOnePart = useMemo(() => firstTableData?.reduce(
+    (acc, currentVal) => acc + Number(currentVal?.indicatorValue),
+    0,
+  ), [firstTableData]);
+  const sumForTwoPart = useMemo(() => secondTableData?.reduce(
+    (acc, currentVal) => acc + Number(currentVal?.indicatorValue),
+    0,
+  ), [secondTableData]);
+
+  const goToKrdStep = useCallback(() => changeFormState('TableFinal'), [changeFormState]);
+  const goHome = useCallback(() => changeFormState('Home'), [changeFormState]);
+  const goToRpvStep = useCallback(() => changeFormState('TableFirst'), [changeFormState]);
+
   return (
     <Card
       className={styles.wrap}
@@ -90,12 +103,15 @@ const App = () => {
             objectAddress={objectAddress}
             title="Определение индификаторов риска Iрпв"
           />
-          <FirstTable
+          <InformationTable
             firstTableData={firstTableData}
+            part="One"
+            sumForOnePart={sumForOnePart}
             changeFirstTableData={changeFirstTableData}
+            columns={columnsForFirstTable}
           />
           <div className={styles.nav}>
-            <Button onClick={() => changeFormState('TableFinal')} type="primary">Расчет критерия добросоветсности Iкрд</Button>
+            <Button onClick={goToKrdStep} type="primary">Расчет критерия добросоветсности Iкрд</Button>
             <Button type="default" onClick={handlePrint}>Скачать pdf файл отчета</Button>
           </div>
         </div>
@@ -108,15 +124,19 @@ const App = () => {
             objectAddress={objectAddress}
             title="Определение критериев добросовестности Iкрд"
           />
-          <SecondTable
+          <InformationTable
             secondTableData={secondTableData}
             fullName={fullName}
+            part="Two"
+            sumForOnePart={sumForOnePart}
+            sumForTwoPart={sumForTwoPart}
             changeSecondTableData={changeSecondTableData}
+            columns={columnsForSecondTable}
           />
           <div className={styles.nav}>
             <Button type="default" onClick={handlePrint}>Скачать pdf файл отчета</Button>
-            <Button type="default" onClick={() => changeFormState('TableFirst')}>Вернуться к определению индикаторов риска Iрпв</Button>
-            <Button type="default" onClick={() => changeFormState('Home')}>Вернуться на главную форму</Button>
+            <Button type="default" onClick={goToRpvStep}>Вернуться к определению индикаторов риска Iрпв</Button>
+            <Button type="default" onClick={goHome}>Вернуться на главную форму</Button>
           </div>
         </div>
       )}

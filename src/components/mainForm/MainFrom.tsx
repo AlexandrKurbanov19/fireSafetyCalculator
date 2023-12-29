@@ -8,6 +8,9 @@ import React, {
 import styles from '../../index.module.scss';
 import { objectTypeData } from './formsStaticData/index';
 import { StoreState } from '../../store';
+import {
+  adressObjectRule, nameObjectRule, typeObjectRule, userFullnameRule,
+} from './formRules';
 
 const formItemLayout = {
   labelCol: {
@@ -19,8 +22,17 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
+const selectWidth = { width: '300px' };
 
-const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 'secondTableData' | 'changeSecondTableData'>> = ({
+const MainFrom: FC<
+Omit<
+StoreState,
+'firstTableData'
+| 'changeFirstTableData'
+| 'secondTableData'
+| 'changeSecondTableData'
+>
+> = ({
   setFullName,
   setObjectAddress,
   setObjectType,
@@ -86,12 +98,23 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
     changeFormState('TableFirst');
   }, [changeFormState]);
 
+  const cleanForm = useCallback(() => {
+    cleanStore();
+    form.resetFields();
+  }, [cleanStore, form]);
+
+  const deleteSelectedUser = useCallback((v: string) => setSelectedUserForDelete(v), []);
+  const onInputFIO = useCallback(
+    (e: React.FormEvent<HTMLInputElement>) => setAddUserForList(e.currentTarget.value),
+    [setAddUserForList],
+  );
+
   const initialVal = useMemo(() => ({
     typeObject: objectTypeData?.find((el) => el?.id === Number(objectType))?.title,
     nameObject: objectName,
     adressObject: objectAddress,
     userFullname: userList?.[0]?.fullName,
-  }), [objectType, objectTypeData, objectName, objectAddress]);
+  }), [objectType, objectName, objectAddress, userList]);
   return (
     <>
       <Form
@@ -106,12 +129,7 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         <Form.Item
           label="Тип объекта"
           name="typeObject"
-          rules={[
-            {
-              required: true,
-              message: 'Пожалуйста выберите тип обьекта',
-            },
-          ]}
+          rules={typeObjectRule}
         >
           <Select
             onChange={(_, i) => {
@@ -129,12 +147,7 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         <Form.Item
           label="Название объекта"
           name="nameObject"
-          rules={[
-            {
-              required: true,
-              message: 'Пожалуйста введите имя обьекта',
-            },
-          ]}
+          rules={nameObjectRule}
         >
           <Input
             value={objectName}
@@ -145,12 +158,7 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         <Form.Item
           label="Адрес объекта"
           name="adressObject"
-          rules={[
-            {
-              required: true,
-              message: 'Пожалуйста введите адрес обьекта',
-            },
-          ]}
+          rules={adressObjectRule}
         >
           <Input
             value={objectAddress}
@@ -161,12 +169,7 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         <Form.Item
           label="Ф.И.О. выполнившего расчет"
           name="userFullname"
-          rules={[
-            {
-              required: true,
-              message: 'Пожалуйста укажите Ф.И.О выполнивнего расчет',
-            },
-          ]}
+          rules={userFullnameRule}
         >
           <Select
             value={fullName}
@@ -211,10 +214,7 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
       <Button
         danger
         type="primary"
-        onClick={() => {
-          cleanStore();
-          form.resetFields();
-        }}
+        onClick={cleanForm}
       >
         Очистить форму
       </Button>
@@ -226,7 +226,7 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         open={fullName === 'new'}
       >
         <Input
-          onInput={(e: React.FormEvent<HTMLInputElement>) => setAddUserForList(e.currentTarget.value)}
+          onInput={onInputFIO}
           placeholder="Введите ФИО"
           value={addUserForList}
         />
@@ -238,8 +238,8 @@ const MainFrom: FC<Omit<StoreState, 'firstTableData' | 'changeFirstTableData' | 
         open={fullName === 'delete'}
       >
         <Select
-          style={{ width: '300px' }}
-          onChange={(v) => setSelectedUserForDelete(v)}
+          style={selectWidth}
+          onChange={deleteSelectedUser}
         >
           {userList.map((el) => (
             <Select.Option value={el?.id} key={el?.id}>

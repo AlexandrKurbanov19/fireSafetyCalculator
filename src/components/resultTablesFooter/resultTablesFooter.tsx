@@ -4,46 +4,59 @@ import styles from './index.module.scss';
 
 interface IResultTablesFooter {
   tableMode: 'First' | 'Final';
-  allSumm?: number;
-  indexU?: number;
-  summaryInd?: number;
+  sumForTwoPart?: number;
+  sumForOnePart?: number;
   riskType?: string;
   userFullName?: string;
 }
 
+const Kgt: number = 0.9489;
 const ResultTablesFooter: FC<IResultTablesFooter> = ({
   tableMode,
-  allSumm,
-  indexU,
-  summaryInd,
+  sumForTwoPart,
+  sumForOnePart,
   riskType,
   userFullName,
 }) => (
   <div>
-    <h1 style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      Σ Iкрд =
-
-      {allSumm}
-    </h1>
+    {tableMode === 'First' && (
+      <h1 className={styles.rowStyle}>
+        Σ Iрпв =
+        {' '}
+        {sumForOnePart}
+      </h1>
+    )}
+    {tableMode === 'Final' && (
+      <h1 className={styles.rowStyle}>
+        Σ Iкрд =
+        {' '}
+        {sumForTwoPart}
+      </h1>
+    )}
     {tableMode === 'Final' && (
       <div>
         <div className={styles.row}>
           <p>Индекс индивидуализации подконтрольного лица</p>
           <p>
             Uинд= Σ Iрпв+ Σ Iкрд =
-
-            {indexU}
+            {' '}
+            {sumForTwoPart && sumForOnePart && Number(sumForTwoPart + sumForOnePart)}
           </p>
         </div>
         <div className={styles.row}>
           <p>
-            Показатель тяжести потенциальных негативных последствий пожара с
-            учетом индекса индивидуализации подконтрольного лица
+            Показатель тяжести потенциальных негативных
+            {' '}
+            <br />
+            последствий пожара с учетом индекса
+            {' '}
+            <br />
+            индивидуализации подконтрольного лица
           </p>
           <p>
             Кг.т.инд.=Uинд + Кгт =
-
-            {summaryInd}
+            {' '}
+            {sumForTwoPart && sumForOnePart && Number(sumForTwoPart + sumForOnePart + Kgt)}
           </p>
         </div>
         <div className={styles.row}>

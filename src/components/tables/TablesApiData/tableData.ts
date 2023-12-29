@@ -5,7 +5,54 @@ export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   title: string;
   record: Item;
   children: React.ReactNode;
+  firstTableData: Item[];
+  secondTableData: Item[];
+  changeFirstTableData: (v: Item[]) => void;
+  changeSecondTableData: (v: Item[]) => void;
+  part: string;
 }
+
+export const columnsForFirstTable = [
+  {
+    title: 'Индикаторы риска причинения вреда (ущерба)',
+    dataIndex: 'risk',
+    width: '40%',
+    editable: false,
+  },
+  {
+    title: 'Показатель (критерий оценки)',
+    dataIndex: 'criterion',
+    width: '25%',
+    editable: true,
+  },
+  {
+    title: 'Значение показателя Iрпв',
+    dataIndex: 'indicatorValue',
+    width: '15%',
+    editable: false,
+  },
+];
+
+export const columnsForSecondTable = [
+  {
+    title: 'Критерии добросоветсности',
+    dataIndex: 'risk',
+    width: '40%',
+    editable: false,
+  },
+  {
+    title: 'Показатель (критерий оценки)',
+    dataIndex: 'criterion',
+    width: '25%',
+    editable: true,
+  },
+  {
+    title: 'Значение показателя Iкрд',
+    dataIndex: 'indicatorValue',
+    width: '15%',
+    editable: false,
+  },
+];
 
 export const originDataForFirstTable: Item[] = [
   {
