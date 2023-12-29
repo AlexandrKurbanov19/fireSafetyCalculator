@@ -15,7 +15,8 @@ interface ITableData {
   fullName?: string;
   sumForOnePart?: number;
   sumForTwoPart?: number;
-  columns: { title: string, dataIndex: string, width: string, editable: boolean }[]
+  columns: { title: string, dataIndex: string, width: string, editable: boolean }[];
+  showRiskTypeResult?: string;
 }
 const tableScroll: TableProps<ITableData>['scroll'] = { x: true };
 
@@ -29,6 +30,7 @@ const InformationTable: React.FC<ITableData> = (
     sumForOnePart,
     sumForTwoPart,
     columns,
+    showRiskTypeResult,
     part,
   },
 ) => {
@@ -80,7 +82,7 @@ const InformationTable: React.FC<ITableData> = (
         sumForTwoPart={sumForTwoPart}
         sumForOnePart={sumForOnePart}
         userFullName={fullName}
-        riskType="Очень опасно"
+        riskType={showRiskTypeResult}
         tableMode={part === 'One' ? 'First' : 'Final'}
       />
     </Form>

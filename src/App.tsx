@@ -66,6 +66,17 @@ const App = () => {
   const goToKrdStep = useCallback(() => changeFormState('TableFinal'), [changeFormState]);
   const goHome = useCallback(() => changeFormState('Home'), [changeFormState]);
   const goToRpvStep = useCallback(() => changeFormState('TableFirst'), [changeFormState]);
+  const showRiskTypeResult = useMemo(() => {
+    const val = sumForOnePart + sumForTwoPart;
+    if (val > 90) {
+      return 'значительный';
+    } if (val < 90 && val > 60) {
+      return 'средний';
+    } if (val < 60 && val > 30) {
+      return 'умеренный';
+    }
+    return 'низкий';
+  }, [sumForTwoPart, sumForOnePart]);
 
   return (
     <Card
@@ -132,6 +143,7 @@ const App = () => {
             sumForTwoPart={sumForTwoPart}
             changeSecondTableData={changeSecondTableData}
             columns={columnsForSecondTable}
+            showRiskTypeResult={showRiskTypeResult}
           />
           <div className={styles.nav}>
             <Button type="default" onClick={handlePrint}>Скачать pdf файл отчета</Button>

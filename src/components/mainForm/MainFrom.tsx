@@ -224,6 +224,7 @@ StoreState,
         onOk={handleOkAddModal}
         onCancel={handleCancelAddModal}
         open={fullName === 'new'}
+        cancelText="Закрыть"
       >
         <Input
           onInput={onInputFIO}
@@ -236,6 +237,7 @@ StoreState,
         onOk={handleOkDeleteModal}
         onCancel={handleCancelDeleteModal}
         open={fullName === 'delete'}
+        cancelText="Закрыть"
       >
         <Select
           style={selectWidth}
